@@ -102,6 +102,9 @@ class SPACE {
     }
 
     updateUserCirclePosition = (lat, lon) => {
+        localStorage.setItem('userLat', lat);
+        localStorage.setItem('userLon', lon);
+
         const userPosition = this._latLonToVector3(lat, lon, this.earthRadius + 0.01);
         this.userLocationGroup.position.copy(userPosition);
         this.userLocationGroup.lookAt(new this.THREE.Vector3(0, 0, 0));
@@ -110,7 +113,6 @@ class SPACE {
     }
 
     Mylocation = (userLat, userLon, proximityRadius) => {
-
         //------------------for plate marker------------------------\\
         const plateGeometry = new this.THREE.CircleGeometry(0.1, 100);
         const plateMaterial = new this.THREE.MeshBasicMaterial({
@@ -187,7 +189,7 @@ class SPACE {
         }
     }
 
-    loadISS = (GLTFLoader, issCoordsDiv, alertBox, window) => {
+    loadISS = (GLTFLoader, issCoordsDiv, alertBox, updateIssInterval) => {
         const loader = new GLTFLoader();
         let issSelf;
 
@@ -201,29 +203,10 @@ class SPACE {
                 issSelf.scale.set(2, 2, 2);
                 this.earth.add(issSelf);
 
-                window.addEventListener('click', (e) => {
-                    const mouse = new this.THREE.Vector2(
-                        (e.clientX / window.innerWidth) * 2 - 1,
-                        -(e.clientY / window.innerHeight) * 2 + 1
-                    );
-                    this.mouse = mouse
-                    const raycaster = new this.THREE.Raycaster();
-                    raycaster.setFromCamera(this.mouse, this.camera);
-                    const intersects = raycaster.intersectObject(issSelf, true);
-                    if (intersects.length) {
-                        highlighted = !highlighted;
-                        issSelf.traverse(child => {
-                            if (child.isMesh) {
-                                child.material.emissive.set(highlighted ? 'yellow' : 'black');
-                            }
-                        });
-                    }
-                });
-
                 this.updateISS(issSelf, issCoordsDiv, alertBox);
                 setInterval(() => {
                     this.updateISS(issSelf, issCoordsDiv, alertBox);
-                }, 5000);
+                }, updateIssInterval);
 
             }
         );
@@ -296,7 +279,7 @@ class SPACE {
             this._latLonToVector3(point.latitude, point.longitude, this.earthRadius + 0.4)
         );
 
-        const curve = new this.THREE.CatmullRomCurve3(pointsArray, false);
+        const curve = new this.THREE.CatmullRomCurve3(pointsArray, true);
         const pointGeormetry = new this.THREE.TubeGeometry(curve, pointsArray.length * 10, 0.005, 3, true);
         const PointsMaterial = new this.THREE.MeshBasicMaterial({
             color: 'white',
