@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISS Live</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="issCoords" class="iss-coords"></div>
+    <div id="info">
+        <h1>Interactive Earth & ISS Tracker</h1>
+        <p>Drag to rotate. green is your location. A white proximity circle and an alert will appear
+            when the ISS flies over it.</p>
+        <form >
+            <div style="display: flex;">
+                <input id="lan" type="number" placeholder="add lan" value="73" />
+                <input id="lat" type="number" placeholder="add lat" value="25" />
+            </div>
+            <input type="submit" value="Update Position" />
+        </form>
+        <button id="headISS" onclick="viewChange()">Head to ISS</button>
+        <button id="headME" onclick="viewChange()">Head to Me</button>
+    </div>
+    <div id="alertBox"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
