@@ -28,7 +28,7 @@ class SPACE {
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
         this.controls.minDistance = 5.5;
-        this.controls.maxDistance = 18;
+        this.controls.maxDistance = 40;
         this.textureLoader = new THREE.TextureLoader();
     }
 

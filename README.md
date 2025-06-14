@@ -18,3 +18,8 @@ Deepened understanding of Three.js fundamentals, especially geometry, materials,
 
 ## What's next for I3Steller
 Planning to expand with more Three.js projects incorporating AI agents for dynamic space visualizations, allowing users to customize parameters like speed and scale through natural language prompts.
+
+# Gallery
+![Alt text](./assets/first.png)
+![Alt text](./assets/second.png)
+![Alt text](./assets/third.png)
