@@ -32,27 +32,20 @@ const headme = document.getElementById('headME');
 headiss.onclick = () => space.headME();
 headme.onclick = () => space.headME(userLat , userLon , 1.5);
 
-let space = new SPACE(THREE , OrbitControls)
+let space = new SPACE(THREE , OrbitControls  , { minDistance : 5.5 , maxDistance : 40 })
 document.body.appendChild(space.renderer.domElement)
 
 
-//get stars
 space.getStars(10000)
-//render earth
 space.renderEarth('./assets/earthtexture.jpg')
-//render cloud layer
 space.renderCloudLayer('./assets/cloud.jpg')
-//render sun
 space.renderSun('./assets/sun.jpg')
-//setup light
 space.lightSetup()
-//my location
-space.Mylocation(userLat , userLon , 1 )
-//load iss 3d model
+space.Mylocation(userLat , userLon , 1.2 )
 space.loadISS(GLTFLoader , issCoordsDiv , alertBox , 2000)
-
-//orbit
 space.renderISSorbit()
+
+
 
 //animate setup
 function animate() {
@@ -67,5 +60,4 @@ window.addEventListener('resize', () => {
     space.renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-space.controls.mouseButtons.RIGHT = null;
 animate();

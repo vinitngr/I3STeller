@@ -12,9 +12,8 @@ class SPACE {
     alertBox;
     mouse;
 
-    constructor(THREE, OrbitControls) {
+    constructor(THREE, OrbitControls , options = { enableDamping : true , dampingFactor : 0.05 , minDistance : 5.5 , maxDistance : 40 }) {
         this.THREE = THREE
-
         this.scene = new THREE.Scene()
 
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
@@ -25,10 +24,12 @@ class SPACE {
         this.renderer.setPixelRatio(window.devicePixelRatio);
 
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableDamping = true;
-        this.controls.dampingFactor = 0.05;
-        this.controls.minDistance = 5.5;
-        this.controls.maxDistance = 40;
+        this.controls.enableDamping = options.enableDamping;
+        this.controls.dampingFactor = options.dampingFactor;
+        this.controls.minDistance = options.minDistance;
+        this.controls.maxDistance = options.maxDistance;
+        this.controls.mouseButtons.RIGHT = null;
+
         this.textureLoader = new THREE.TextureLoader();
     }
 
@@ -164,6 +165,16 @@ class SPACE {
             const res = await fetch(whereTheISS);
             const { latitude, longitude, altitude, velocity } = await res.json();
             this.issNow = { latitude, longitude, altitude, velocity };
+
+            let locationName;
+            try {
+                const locRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+                const locData = await locRes.json();
+                locationName = locData.address?.country || locData.display_name || 'Over Ocean';
+            } catch (error) {
+                console.log("Fail to get location due to some issue", error);
+            }
+
             if (issSelf) {
                 issSelf.position.copy(this._latLonToVector3(latitude, longitude, this.earthRadius + 0.4));
 
@@ -171,6 +182,7 @@ class SPACE {
                 if (issCoordsDiv) {
                     issCoordsDiv.innerHTML = `
                         <strong>ISS Position</strong><br>
+                        Location: ${locationName}<br>
                         Latitude: ${latitude.toFixed(4)}°<br>
                         Longitude: ${longitude.toFixed(4)}°<br>
                         Altitude: ${altitude.toFixed(2)} km<br>
@@ -264,7 +276,7 @@ class SPACE {
     };
 
     async renderISSorbit() {
-      const now = Math.floor(Date.now() / 1000);
+        const now = Math.floor(Date.now() / 1000);
         const N = 20;
         const interval = 285;
         const half = Math.floor(N / 2);
