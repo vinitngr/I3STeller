@@ -91,7 +91,7 @@ class SPACE {
         let lightCoordinates = this.getPositionForLightAndSun();
         directionalLight.position.copy(lightCoordinates);
         this.scene.add(directionalLight);
-    };
+    }
 
     _latLonToVector3 = (lat, lon, radius) => {
         const phi = (90 - lat) * (Math.PI / 180);
@@ -168,9 +168,9 @@ class SPACE {
 
             let locationName;
             try {
-                const locRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+                const locRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=25&lon=${longitude}`);
                 const locData = await locRes.json();
-                locationName = locData.address?.country || locData.display_name || 'Over Ocean';
+                locationName = {country : locData.address?.country || locData.display_name || 'Over Ocean' , state : locData.address?.state || ''};
             } catch (error) {
                 console.log("Fail to get location due to some issue", error);
             }
@@ -182,7 +182,7 @@ class SPACE {
                 if (issCoordsDiv) {
                     issCoordsDiv.innerHTML = `
                         <strong>ISS Position</strong><br>
-                        Location: ${locationName}<br>
+                        Location: ${locationName.country}, ${locationName.state}<br>
                         Latitude: ${latitude.toFixed(4)}°<br>
                         Longitude: ${longitude.toFixed(4)}°<br>
                         Altitude: ${altitude.toFixed(2)} km<br>
@@ -213,6 +213,9 @@ class SPACE {
                 issSelf = gltf.scene;
                 this.issSelf = issSelf
                 issSelf.scale.set(2, 2, 2);
+                issSelf.rotation.x = Math.PI / 2;
+                issSelf.rotation.y = Math.PI / 3;
+                issSelf.rotation.z = Math.PI / 3;
                 this.earth.add(issSelf);
 
                 this.updateISS(issSelf, issCoordsDiv, alertBox);
@@ -273,7 +276,7 @@ class SPACE {
         // }
         // this.controls.target.copy(center);
         // this.controls.update();
-    };
+    }
 
     async renderISSorbit() {
         const now = Math.floor(Date.now() / 1000);
