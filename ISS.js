@@ -4,7 +4,7 @@ class SPACE {
     camera;
     renderer;
     this;
-    earthRadius = 5;
+    earthRadius;
     textureLoader;
     controls;
     userLocationGroup;
@@ -12,9 +12,20 @@ class SPACE {
     alertBox;
     mouse;
 
-    constructor(THREE, OrbitControls , options = { enableDamping : true , dampingFactor : 0.05 , minDistance : 5.5 , maxDistance : 40 }) {
-        this.THREE = THREE
-        this.scene = new THREE.Scene()
+    constructor(THREE, OrbitControls, options = {}) {
+        options = {
+            enableDamping: true,
+            dampingFactor: 0.05,
+            minDistance: 5.5,
+            maxDistance: 40,
+            earthRadius: 5,
+            ...options
+        };
+
+        this.THREE = THREE;
+        this.earthRadius = options.earthRadius;
+
+        this.scene = new THREE.Scene();
 
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
         this.camera.position.z = 5;
@@ -170,7 +181,7 @@ class SPACE {
             try {
                 const locRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=25&lon=${longitude}`);
                 const locData = await locRes.json();
-                locationName = {country : locData.address?.country || locData.display_name || 'Over Ocean' , state : locData.address?.state || ''};
+                locationName = { country: locData.address?.country || locData.display_name || 'Over Ocean', state: locData.address?.state || '' };
             } catch (error) {
                 console.log("Fail to get location due to some issue", error);
             }
